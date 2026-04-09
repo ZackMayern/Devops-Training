@@ -1,0 +1,22 @@
+actions-runner
+.github/.DS_Store
+/.DS_Store
+terraform/.DS_Store
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+packages/
+*.log
+*.tmp
+*.cache
+*.pdb
+*.exe
+*.dll

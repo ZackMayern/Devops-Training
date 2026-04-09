@@ -1,0 +1,46 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  # -------------------
+  # Docker / App flow
+  # -------------------
+  build:
+    uses: ./.github/workflows/build-csharp.yml
+
+  sonar:
+    needs: build
+    uses: ./.github/workflows/sonar-analysis.yml
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  docker-build:
+    needs: build
+    uses: ./.github/workflows/docker-build-and-push.yml
+    with:
+      run_number: ${{ github.run_number }}
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+  # # -------------------
+  # # Terraform flow
+  # # -------------------
+  # terraform-plan:
+  #   uses: ./.github/workflows/terraform-plan.yml
+  #   secrets:
+  #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #     AWS_REGION: ${{ secrets.AWS_REGION }}
+
+  # terraform-apply:
+  #   needs: terraform-plan
+  #   uses: ./.github/workflows/terraform-apply.yml
+  #   secrets:
+  #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #     AWS_REGION: ${{ secrets.AWS_REGION }}
